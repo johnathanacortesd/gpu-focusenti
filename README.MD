@@ -1,8 +1,12 @@
 # 🔍 Sentimiento por marca — noticias (español)
 
-App en [Streamlit](https://gpu-focusenti.streamlit.app/) que toma un archivo `.xlsx` de noticias,
-detecta las menciones de una **marca (y sus alias)** y clasifica el **tono** de
-cada mención en **Positivo / Neutro / Negativo**.
+App en [Streamlit](https://gpu-focusenti.streamlit.app/) para **análisis de sentimiento orientado a
+marca**, enfocado en **noticias para GlobalNews Group**. Toma un archivo `.xlsx` de
+noticias, detecta las menciones de una **marca (y sus alias)** y clasifica el **tono**
+de cada mención en **Positivo / Neutro / Negativo**.
+
+> 🔒 **Protegida con clave de acceso**, configurable en los Secrets de Streamlit
+> (sección [Clave de acceso](#clave-de-acceso)).
 
 ## Qué hace
 
@@ -12,7 +16,8 @@ cada mención en **Positivo / Neutro / Negativo**.
    negativa sobre otro tema queda *Neutro* o *Positivo* si la mención a la marca lo es.
 4. **Agrupa noticias iguales/similares** (FAISS + embeddings) y les aplica el mismo tono
    (voto por mayoría; en empate gana el más severo).
-5. Devuelve el archivo con dos columnas nuevas al final: `Confianza` y `Tono`.
+5. Devuelve el archivo manteniendo el **orden original de columnas**, con dos columnas
+   nuevas **al final**: `Confianza` y `Tono`.
 
 ### Reglas de clasificación
 
@@ -42,15 +47,35 @@ cada mención en **Positivo / Neutro / Negativo**.
 4. Deploy. La **primera ejecución** es más lenta: descarga los modelos (~500 MB) desde
    Hugging Face. Las siguientes son normales.
 
-## Modelos (gratuitos, de uso comercial)
+## Clave de acceso
+
+La app pide una **contraseña** antes de cargar. Configúrala en **Streamlit Cloud** →
+**Settings → Secrets** con:
+
+```toml
+app_password = "tu_clave_secreta"
+```
+
+- Si `app_password` está definido, la app **pide la contraseña** antes de cargar.
+- Si no está definido, la app queda **abierta** (útil para probar localmente).
+
+Para desarrollo local, crea el archivo `.streamlit/secrets.toml` con el mismo
+contenido (`app_password = "..."`).
+
+## Modelos y licencias
 
 | Componente | Modelo | Licencia |
 |---|---|---|
-| Sentimiento (español nativo) | `pysentimiento/robertuito-sentiment-analysis` | base **MIT** ✅ |
+| Sentimiento (español nativo) | `pysentimiento/robertuito-sentiment-analysis` | base [MIT](https://github.com/pysentimiento/robertuito/blob/main/LICENSE) ✅ |
 | Sentimiento (multilingüe) | `cardiffnlp/twitter-xlm-roberta-base-sentiment` | base MIT ✅ |
 | Embeddings (agrupar) | `paraphrase-multilingual-MiniLM-L12-v2` | Apache-2.0 ✅ |
 
-> Nota de licencia (honesta): RoBERTuito **base** es MIT (uso comercial claro). https://github.com/pysentimiento/robertuito/blob/main/LICENSE.
+> La licencia de RoBERTuito está en
+> <https://github.com/pysentimiento/robertuito/blob/main/LICENSE> (**MIT**).
+> RoBERTuito **base** es MIT (uso comercial claro). El clasificador de sentimiento es un
+> fine-tune sobre esa base, del proyecto open-source pysentimiento, entrenado con el
+> corpus académico TASS. En la práctica es de uso comercial; si necesitas un papel
+> comercial *impoluto*, el multilingüe (base MIT) es la opción más conservadora.
 
 ## Limitaciones (importantes y honestas)
 
@@ -62,3 +87,8 @@ cada mención en **Positivo / Neutro / Negativo**.
 - El modelo de sentimiento fue entrenado en tweets: rinde muy bien en noticias cortas y
   redes; en textos muy largos/abstractos puede bajar la precisión.
 - El agrupado busca vecinos exactos por similitud de coseno (FAISS `IndexFlatIP`, exacto).
+
+## Créditos
+
+Hecho con [Hermes](https://github.com/NousResearch/hermes-agent) por
+**Johnathan Cortés**.
