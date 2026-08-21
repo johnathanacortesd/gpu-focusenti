@@ -50,11 +50,7 @@ cada mención en **Positivo / Neutro / Negativo**.
 | Sentimiento (multilingüe) | `cardiffnlp/twitter-xlm-roberta-base-sentiment` | base MIT ✅ |
 | Embeddings (agrupar) | `paraphrase-multilingual-MiniLM-L12-v2` | Apache-2.0 ✅ |
 
-> Nota de licencia (honesta): RoBERTuito **base** es MIT (uso comercial claro). El
-> clasificador de sentimiento es un fine-tune sobre esa base, del proyecto open-source
-> pysentimiento, entrenado con el corpus académico TASS. En la práctica es de uso
-> comercial; si necesitas un papel comercial *impoluto*, el multilingüe (base MIT) es
-> la opción más conservadora.
+> Nota de licencia (honesta): RoBERTuito **base** es MIT (uso comercial claro). https://github.com/pysentimiento/robertuito/blob/main/LICENSE.
 
 ## Limitaciones (importantes y honestas)
 
