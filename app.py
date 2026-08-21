@@ -30,6 +30,39 @@ import faiss
 
 st.set_page_config(page_title="Sentimiento por marca", page_icon="🔍", layout="wide")
 
+
+# ---------------------------- control de acceso -------------------------------
+def check_password():
+    """Pide contraseña si `app_password` está definida en st.secrets.
+
+    - En Streamlit Cloud: Settings → Secrets → `app_password = "tu_clave"`.
+    - Local: crea `.streamlit/secrets.toml` con el mismo contenido.
+    - Si no hay clave definida, la app queda abierta (útil para probar).
+    """
+    if st.session_state.get("auth", False):
+        return True
+
+    valid = st.secrets.get("app_password", "").strip()
+
+    if not valid:  # sin clave configurada → acceso libre
+        st.session_state["auth"] = True
+        return True
+
+    st.title("🔒 Acceso restringido")
+    pwd = st.text_input("Contraseña de acceso", type="password")
+    if pwd:
+        if pwd == valid:
+            st.session_state["auth"] = True
+            st.rerun()
+        else:
+            st.error("Contraseña incorrecta.")
+    return False
+
+
+if not check_password():
+    st.stop()
+
+
 # ---------------------------- modelos (en caché) ----------------------------
 SENT_MODELS = {
     "🇪🇸 RoBERTuito (español nativo) — recomendado": "pysentimiento/robertuito-sentiment-analysis",
@@ -85,7 +118,6 @@ if uf is not None:
     if st.session_state.get("fname") != uf.name:
         st.session_state["fname"] = uf.name
         st.session_state.pop("result_bytes", None)
-        st.session_state.pop("result_df", None)
         st.session_state.pop("result_name", None)
 
     df = pd.read_excel(uf)
@@ -224,7 +256,6 @@ if uf is not None:
             buf = io.BytesIO()
             res.to_excel(buf, index=False, engine="openpyxl")
 
-            st.session_state["result_df"] = res
             st.session_state["result_bytes"] = buf.getvalue()
             st.session_state["result_name"] = uf.name.rsplit(".", 1)[0] + "_tono.xlsx"
 
@@ -232,16 +263,7 @@ if uf is not None:
 
     # --------------------------- mostrar resultados ---------------------------
     if "result_bytes" in st.session_state:
-        st.divider()
-        res = st.session_state["result_df"]
-        vc = res["Tono"].value_counts()
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("😀 Positivo", int(vc.get("Positivo", 0)))
-        m2.metric("😐 Neutro", int(vc.get("Neutro", 0)))
-        m3.metric("😡 Negativo", int(vc.get("Negativo", 0)))
-        m4.metric("📄 Total", int(len(res)))
-
-        st.dataframe(res, height=400)
+        st.success("✅ Análisis listo. Descarga el archivo:")
         st.download_button(
             "⬇️ Descargar XLSX",
             data=st.session_state["result_bytes"],
