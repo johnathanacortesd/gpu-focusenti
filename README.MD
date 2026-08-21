@@ -1,6 +1,6 @@
 # 🔍 Sentimiento por marca — noticias (español)
 
-App en [Streamlit](https://streamlit.io) que toma un archivo `.xlsx` de noticias,
+App en [Streamlit](https://gpu-focusenti.streamlit.app/) que toma un archivo `.xlsx` de noticias,
 detecta las menciones de una **marca (y sus alias)** y clasifica el **tono** de
 cada mención en **Positivo / Neutro / Negativo**.
 
