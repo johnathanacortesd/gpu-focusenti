@@ -248,10 +248,15 @@ if uf is not None:
 
                 final_tone = [cluster_tone[root[i]] for i in range(n)]
 
-            # --- resultado ---
+            # --- resultado (orden de entrada intacto + columnas nuevas al final) ---
             res = df.copy()
+            # por si el xlsx ya traía columnas 'Confianza' o 'Tono': las reemplazamos
+            res = res.drop(columns=[c for c in ("Confianza", "Tono") if c in res.columns])
             res["Confianza"] = [round(c, 3) for c in rows_conf]
             res["Tono"] = final_tone
+            # orden garantizado: columnas originales (como venían) + Confianza + Tono
+            orig_cols = [c for c in df.columns if c not in ("Confianza", "Tono")]
+            res = res[orig_cols + ["Confianza", "Tono"]]
 
             buf = io.BytesIO()
             res.to_excel(buf, index=False, engine="openpyxl")
