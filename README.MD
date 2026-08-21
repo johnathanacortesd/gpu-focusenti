@@ -71,10 +71,7 @@ contenido (`app_password = "..."`).
 
 > La licencia de RoBERTuito está en
 > <https://github.com/pysentimiento/robertuito/blob/main/LICENSE> (**MIT**).
-> RoBERTuito **base** es MIT (uso comercial claro). El clasificador de sentimiento es un
-> fine-tune sobre esa base, del proyecto open-source pysentimiento, entrenado con el
-> corpus académico TASS. En la práctica es de uso comercial; si necesitas un papel
-> comercial *impoluto*, el multilingüe (base MIT) es la opción más conservadora.
+> RoBERTuito **base** es MIT (uso comercial claro). 
 
 ## Limitaciones (importantes y honestas)
 
