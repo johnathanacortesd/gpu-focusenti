@@ -5,8 +5,7 @@ marca**, enfocado en **noticias para GlobalNews Group**. Toma un archivo `.xlsx`
 noticias, detecta las menciones de una **marca (y sus alias)** y clasifica el **tono**
 de cada mención en **Positivo / Neutro / Negativo**.
 
-> 🔒 **Protegida con clave de acceso**, configurable en los Secrets de Streamlit
-> (sección [Clave de acceso](#clave-de-acceso)).
+> 🔒 **Protegida con clave de acceso**, configurable en los Secrets de Streamlit.
 
 ## Qué hace
 
